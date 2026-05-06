@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>101 причина</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Montserrat:wght@200;300&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#05060f; min-height:100vh; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; overflow:hidden; cursor:none; }
+  .cursor { position:fixed; width:8px; height:8px; background:#3d5af1; border-radius:50%; pointer-events:none; z-index:9999; mix-blend-mode:screen; transition:transform .1s; }
+  .cursor-ring { position:fixed; width:30px; height:30px; border:1px solid rgba(91,127,255,.35); border-radius:50%; pointer-events:none; z-index:9998; transition:all .12s ease; mix-blend-mode:screen; }
+  .stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .star { position:absolute; background:#fff; border-radius:50%; animation:tw var(--d) ease-in-out infinite; opacity:0; }
+  @keyframes tw { 0%,100%{opacity:0;transform:scale(.5)} 50%{opacity:var(--o);transform:scale(1)} }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; opacity:.35; }
+  .wrap { position:relative; z-index:2; text-align:center; padding:3rem 2rem; max-width:520px; width:100%; }
+  .glow { position:fixed; width:400px; height:400px; background:radial-gradient(circle,rgba(61,90,241,.13) 0%,transparent 70%); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; animation:pg 6s ease-in-out infinite; z-index:1; }
+  @keyframes pg { 0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)} }
+  .label { font-size:.6rem; letter-spacing:.5em; color:#3d5af1; text-transform:uppercase; margin-bottom:1.2rem; }
+  .number { font-family:'Cormorant Garamond',serif; font-size:clamp(5rem,18vw,10rem); font-weight:300; color:transparent; background:linear-gradient(135deg,#a8b8ff 0%,#dce4ff 45%,#5b7fff 100%); -webkit-background-clip:text; background-clip:text; line-height:1; margin-bottom:1.2rem; transition:opacity .35s; }
+  .divider { width:40px; height:1px; background:linear-gradient(to right,transparent,rgba(91,127,255,.45),transparent); margin:0 auto 1.8rem; }
+  .reason { font-family:'Cormorant Garamond',serif; font-size:clamp(1.1rem,3.5vw,1.45rem); font-style:italic; font-weight:300; color:#a8b8ff; line-height:1.85; min-height:90px; display:flex; align-items:center; justify-content:center; margin-bottom:2rem; transition:opacity .35s; padding:0 1rem; }
+  .progress { display:flex; gap:4px; justify-content:center; flex-wrap:wrap; max-width:280px; margin:0 auto 2.2rem; }
+  .dot { width:4px; height:4px; border-radius:50%; background:rgba(91,127,255,.18); transition:background .3s; flex-shrink:0; }
+  .dot.on { background:#3d5af1; }
+  .btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:2rem; }
+  button { background:transparent; border:.5px solid rgba(91,127,255,.28); color:#6878aa; font-family:'Montserrat',sans-serif; font-size:.6rem; font-weight:300; letter-spacing:.35em; text-transform:uppercase; padding:.65rem 1.3rem; cursor:pointer; border-radius:2px; transition:all .3s; }
+  button:hover { border-color:rgba(91,127,255,.7); color:#a8b8ff; }
+  .sig { font-size:.55rem; letter-spacing:.45em; color:#3d5af1; text-transform:uppercase; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+<div class="stars" id="stars"></div>
+<div class="glow"></div>
+
+<div class="wrap">
+  <div class="label">причина</div>
+  <div class="number" id="num">1</div>
+  <div class="divider"></div>
+  <div class="reason" id="reason">ты лучезарная. буквально — рядом с тобой светлее.</div>
+  <div class="progress" id="prog"></div>
+  <div class="btns">
+    <button onclick="prev()">← назад</button>
+    <button onclick="next()">вперёд →</button>
+    <button onclick="rnd()">случайная</button>
+  </div>
+  <div class="sig">лёша, всегда</div>
+</div>
+
+<script>
+const reasons = [
+  "ты лучезарная. буквально — рядом с тобой светлее.",
+  "ты самая красивая для меня. без вариантов.",
+  "люблю тебя любой — в любое время и в любом настроении.",
+  "ты стильная так, что это даже несправедливо.",
+  "твой свег реально тяжёлый. в хорошем смысле.",
+  "ты добрая — по-настоящему, не напоказ.",
+  "я всегда рядом. это не слова — это просто факт.",
+  "ты самое ценное что есть в моей жизни.",
+  "ты няшная, и это одна из лучших твоих черт.",
+  "ты настоящая. не притворяешься — и это редкость.",
+  "твоя эстетика — отдельный вид искусства.",
+  "ты умная, даже когда делаешь вид что нет.",
+  "мне нравится как ты смеёшься.",
+  "ты нишевая в лучшем смысле — таких больше нет.",
+  "ты крутая. просто крутая, без объяснений.",
+  "люблю когда ты кот. это идёт тебе.",
+  "ты тёплая — не температурой, а внутри.",
+  "с тобой мне хорошо. по-настоящему хорошо.",
+  "ты умеешь быть собой — и это восхитительно.",
+  "твой взгляд — отдельная история.",
+  "ты заслуживаешь всего самого лучшего.",
+  "я думаю о тебе постоянно. это приятно.",
+  "ты делаешь мои дни лучше — просто существуя.",
+  "твой характер — это то за что я влюбился.",
+  "ты смелая, даже когда тебе страшно.",
+  "мне нравится твой вкус во всём.",
+  "ты не боишься быть собой — это сильно.",
+  "ты красивая когда молчишь. и когда говоришь тоже.",
+  "у тебя самая твоя улыбка в мире.",
+  "ты умеешь чувствовать — глубоко и честно.",
+  "мне с тобой спокойно. по-настоящему.",
+  "ты моя любимая. это звучит просто, но значит всё.",
+  "ты добавляешь смысл в обычные вещи.",
+  "ты не идеальная — ты лучше. ты настоящая.",
+  "люблю твою энергетику — она особенная.",
+  "ты умеешь замечать детали которые другие пропускают.",
+  "ты вдохновляешь меня просто своим существованием.",
+  "тяжёлые дни заканчиваются. я остаюсь.",
+  "ты важнее всего что я мог бы назвать важным.",
+  "мне нравится наше молчание — оно тоже уютное.",
+  "ты особенная — и это не комплимент, это наблюдение.",
+  "люблю тебя не за что-то конкретное. просто тебя.",
+  "ты умеешь быть нежной — и это очень ценно.",
+  "твоя искренность — одна из самых редких вещей.",
+  "ты красивая без всяких условий.",
+  "мне нравится как ты думаешь.",
+  "ты умеешь слушать — по-настоящему.",
+  "с тобой я хочу проводить время. всегда.",
+  "ты моя любимость. это слово придумали для тебя.",
+  "ты добавляешь тепло в любое место где появляешься.",
+  "люблю твой стиль думать о вещах.",
+  "ты не пытаешься казаться — ты просто есть.",
+  "мне нравится что ты такая как есть.",
+  "ты умеешь радоваться мелочам — это дар.",
+  "ты моя главная причина улыбаться.",
+  "ты смелее чем думаешь.",
+  "люблю тебя громко, даже когда молчу.",
+  "ты лучшее что есть в моих днях.",
+  "рядом с тобой я хочу быть лучше.",
+  "ты важна. очень. каждый день.",
+  "твоя красота — не только снаружи, хотя и снаружи тоже.",
+  "ты умеешь быть крутой без усилий.",
+  "мне нравится как ты смотришь на мир.",
+  "ты моя. и это звучит лучше всего остального.",
+  "ты необычная — в самом лучшем смысле.",
+  "люблю твою дерзость когда она появляется.",
+  "ты умеешь быть мягкой — это сила, не слабость.",
+  "с тобой даже тишина комфортная.",
+  "ты заслуживаешь любви без условий — и она у тебя есть.",
+  "мне нравится что ты именно такая.",
+  "ты умеешь чувствовать красоту в обычном.",
+  "ты моё любимое существо на планете.",
+  "люблю тебя не потому что надо — потому что хочу.",
+  "ты сильная даже когда кажется что нет.",
+  "твоя нишевость — это суперсила.",
+  "мне нравится твой юмор когда он появляется.",
+  "ты умеешь быть настоящей — и это дорогого стоит.",
+  "с тобой хочется оставаться. всегда.",
+  "ты красивая в моменты когда об этом не думаешь.",
+  "люблю твою интуицию.",
+  "ты умеешь любить — это чувствуется.",
+  "мне нравится быть твоим.",
+  "ты лучезарна даже в пасмурный день.",
+  "ты самая важная для меня. точка.",
+  "люблю когда ты расслаблена и просто ты.",
+  "ты умеешь быть уютной — просто своим присутствием.",
+  "мне нравится твоя глубина.",
+  "ты особенная — и я рад что знаю это.",
+  "ты даёшь мне ощущение дома.",
+  "люблю тебя больше чем умею объяснить.",
+  "ты умеешь быть смешной — и это отлично.",
+  "мне нравится твоя непредсказуемость.",
+  "ты красивая изнутри — это заметнее всего.",
+  "с тобой мне не надо никуда.",
+  "ты моё всё. банально — но точно.",
+  "люблю тебя сейчас и буду любить потом.",
+  "ты умеешь быть живой — по-настоящему живой.",
+  "мне нравится что ты существуешь.",
+  "ты самое тёплое что у меня есть.",
+  "люблю тебя. просто люблю. этого достаточно."
+];
+
+let cur = 0;
+
+function show(i, anim) {
+  const n = document.getElementById('num');
+  const r = document.getElementById('reason');
+  if (anim) { n.style.opacity = 0; r.style.opacity = 0; }
+  setTimeout(() => {
+    n.textContent = i + 1;
+    r.textContent = reasons[i];
+    n.style.opacity = 1;
+    r.style.opacity = 1;
+    document.querySelectorAll('.dot').forEach((d, j) => d.classList.toggle('on', j === i));
+  }, anim ? 300 : 0);
+}
+
+function next() { cur = (cur + 1) % reasons.length; show(cur, true); }
+function prev() { cur = (cur - 1 + reasons.length) % reasons.length; show(cur, true); }
+function rnd() { let n; do { n = Math.floor(Math.random() * reasons.length); } while (n === cur); cur = n; show(cur, true); }
+
+const prog = document.getElementById('prog');
+reasons.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' on' : '');
+  prog.appendChild(d);
+});
+
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 100; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const sz = Math.random() * 1.8 + 0.4;
+  s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*6}s;--o:${0.2+Math.random()*0.7};animation-delay:${Math.random()*6}s`;
+  starsEl.appendChild(s);
+}
+
+const cursor = document.getElementById('cur');
+const ring = document.getElementById('ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 4 + 'px';
+  cursor.style.top = my - 4 + 'px';
+});
+(function animRing() {
+  rx += (mx - rx - 15) * 0.12;
+  ry += (my - ry - 15) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft') prev();
+});
+</script>
+</body>
+</html>
